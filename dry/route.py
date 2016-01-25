@@ -1,14 +1,16 @@
 import re
 from dry import utils
+from dry.http.response import Response
 
 class Router():
 
-    def __init__(self):
-        self.routes = {}
+    routes = {}
 
+    @classmethod
     def add(self, pattern, controller):
         self.routes[pattern] = controller
 
+    @classmethod
     def route(self, req):
         for pattern, controller in self.routes.items():
             search = re.fullmatch(pattern, req.path)
@@ -20,7 +22,10 @@ class Router():
                     return
                 except NotFound:
                     continue
-        print( "ERROR404" )
+
+        Response.set_http_response_code(404)
+        Response.set_content_type('text/html')
+        Response.output('ERROR 404')
 
 class NotFound(Exception):
     pass

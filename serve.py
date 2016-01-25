@@ -1,15 +1,15 @@
-import socketserver
-from http.server import BaseHTTPRequestHandler
-from dry import http
-from app.cfg.routes import router
+import socketserver, webbrowser
+from dry import utils
+from dry.http.request import RequestHandler
 
-class RequestHandler(BaseHTTPRequestHandler):
+PORT = 8000
 
-    def do_GET(self):
-        req = http.Request(self.path)
-        router.route(req)
+utils.execfile( 'app/cfg/routes.py' )
 
-httpd = socketserver.TCPServer(('', 8003), RequestHandler)
+httpd = socketserver.TCPServer(('', PORT), RequestHandler)
 
-print('serving at port 8003')
+webbrowser.open('http://localhost:' + str(PORT))
+
+print('serving at port ' + str(PORT))
+
 httpd.serve_forever()

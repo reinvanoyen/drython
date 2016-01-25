@@ -1,3 +1,7 @@
+from http.server import BaseHTTPRequestHandler
+from dry.http.response import Response
+from dry.route import Router
+
 class Request():
 
     def __init__(self, path):
@@ -14,8 +18,15 @@ class RequestDataWrapper():
     def set_data(self, data):
         self.data = data
 
-    def string(self, k):
+    def str(self, k):
         return str(self.data.get(k))
 
-    def integer(self, k):
+    def int(self, k):
         return int(self.data.get(k))
+
+class RequestHandler(BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        req = Request(self.path)
+        Response.request_handler = self
+        Router.route(req)
